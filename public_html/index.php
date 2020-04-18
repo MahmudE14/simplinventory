@@ -1,4 +1,10 @@
-  <?php include_once("templates/header.php"); ?>
+<?php 
+include_once("database/constants.php");
+if (isset($_SESSION["userid"])) {
+  header("location:" . DOMAIN . '/dashboard.php');
+}
+?>
+<?php include_once("templates/header.php"); ?>
 
   <div class="contaner">
     <?php if (isset($_GET["msg"]) && !empty($_GET["msg"])) { ?>

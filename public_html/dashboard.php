@@ -1,3 +1,12 @@
+<?php
+include_once("database/constants.php");
+
+if (!isset($_SESSION["userid"])) {
+    header("location:" . DOMAIN . "/");
+}
+
+?>
+
 <?php include_once("templates/header.php"); ?>
 
 <div class="container">

@@ -1,7 +1,9 @@
 $(document).ready(function () {
     let DOMAIN = 'http://localhost/inventory/public_html/';
 
-    // Register
+    /**
+     * Register
+     */
     $('#register_form').on('submit', function () {
         let status = false;
         let name = $('#username');
@@ -9,8 +11,6 @@ $(document).ready(function () {
         let password = $('#password');
         let re_password = $('#re_password');
         let usertype = $('#usertype');
-        let name_pattern = new RegExp('/^[A-Za-z ]+$/');
-        // let email_pattern = new RegExp('/^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)*(\.[a-zA-Z]{2,4})$/');
         // check username
         if (name.val().length < 6) {
             name.addClass('border-danger');
@@ -91,8 +91,11 @@ $(document).ready(function () {
         }
     });
 
-    // Login
+    /**
+     * Login
+     */
     $('#login_form').on('submit', function () {
+        // $('.overlay').show()
         let status = false;
         let email = $('#login_email');
         let password = $('#login_password');
@@ -138,6 +141,19 @@ $(document).ready(function () {
         }
     });
 
+    fetchCategory();
+
+    function fetchCategory() {
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            data: {getCategory: 1},
+            success: data => {
+                let root = '<option class="form-control" value="0">Root</option>';
+                $('#parent_cat').html(root + data);
+            }
+        });
+    }
 
     function validateEmail(mail) {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
