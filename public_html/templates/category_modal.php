@@ -2,13 +2,13 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form id="form_category" onsubmit="return false">
+        <form id="category_form" onsubmit="return false">
           <div class="form-group">
             <label>Category Name</label>
             <input type="text" class="form-control" id="category_name" name="category_name">
@@ -19,7 +19,7 @@
               <option class="form-control" value="0">Root</option>
             </select>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary">Add Category</button>
         </form>
       </div>
       <div class="modal-footer">

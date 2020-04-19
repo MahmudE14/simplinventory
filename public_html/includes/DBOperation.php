@@ -22,6 +22,19 @@ class DBOperation
         }
     }
 
+    public function addBrand($brand_name)
+    {
+        $status = 1;
+        $pre_stmt = $this->con->prepare("INSERT INTO `brands`(`brand_name`, `status`) VALUES (?, ?)");
+        $pre_stmt->bind_param("si", $brand_name, $status);
+        $result = $pre_stmt->execute() or die($this->con->error);
+        if ($result) {
+            return "BRAND_ADDED";
+        } else {
+            return 0;
+        }
+    }
+
     public function getAllRecords($table)
     {
         $pre_stmt = $this->con->prepare("SELECT * FROM " . $table);

@@ -1,7 +1,7 @@
 $(document).ready(function () {
     let DOMAIN = 'http://localhost/inventory/public_html/';
 
-    /**
+    /** = = = = = = = = = = 
      * Register
      */
     $('#register_form').on('submit', function () {
@@ -91,7 +91,7 @@ $(document).ready(function () {
         }
     });
 
-    /**
+    /** = = = = = = = = = = 
      * Login
      */
     $('#login_form').on('submit', function () {
@@ -147,13 +147,67 @@ $(document).ready(function () {
         $.ajax({
             url: DOMAIN + 'includes/process.php',
             method: 'POST',
-            data: {getCategory: 1},
+            data: { getCategory: 1 },
             success: data => {
                 let root = '<option class="form-control" value="0">Root</option>';
                 $('#parent_cat').html(root + data);
             }
         });
     }
+
+    /**
+     *  = = = = = = = = = = 
+     * Category
+     *  = = = = = = = = = = 
+     */
+    $('#category_form').on('submit', function () {
+        if ($('#category_name').val() == '') {
+            $('#category_name').addClass('border-danger');
+            $('#cat_error').html('<span class="text-danger">Please enter Category name</span>');
+        } else {
+            $.ajax({
+                url: DOMAIN + 'includes/process.php',
+                method: 'POST',
+                data: $('#category_form').serialize(),
+                success: data => {
+                    if (data == 'CATEGORY_ADDED') {
+                        $('#category_name').removeClass('border-danger');
+                        $('#cat_error').html('<span class="text-success">Successfully added new Category!</span>');
+                        $('#category_name').val('');
+                    } else {
+                        alert(data);
+                    }
+                }
+            });
+        }
+    });
+
+    /**
+     *  = = = = = = = = = = 
+     * Brand
+     *  = = = = = = = = = = 
+     */
+    $('#brand_form').on('submit', function () {
+        if ($('#brand_name').val() == '') {
+            $('#brand_name').addClass('border-danger');
+            $('#brand_error').html('<span class="text-danger">Please enter Brand name</span>');
+        } else {
+            $.ajax({
+                url: DOMAIN + 'includes/process.php',
+                method: 'POST',
+                data: $('#brand_form').serialize(),
+                success: data => {
+                    if (data == 'BRAND_ADDED') {
+                        $('#brand_name').removeClass('border-danger');
+                        $('#brand_error').html('<span class="text-success">Successfully added new Brand!</span>');
+                        $('#brand_name').val('');
+                    } else {
+                        alert(data);
+                    }
+                }
+            });
+        }
+    })
 
     function validateEmail(mail) {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
