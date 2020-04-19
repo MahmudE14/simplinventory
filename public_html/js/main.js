@@ -1,8 +1,10 @@
 $(document).ready(function () {
     let DOMAIN = 'http://localhost/inventory/public_html/';
 
-    /** = = = = = = = = = = 
+    /**
+     *  = = = = = = = = = = 
      * Register
+     *  = = = = = = = = = = 
      */
     $('#register_form').on('submit', function () {
         let status = false;
@@ -91,8 +93,10 @@ $(document).ready(function () {
         }
     });
 
-    /** = = = = = = = = = = 
+    /**
+     *  = = = = = = = = = = 
      * Login
+     *  = = = = = = = = = = 
      */
     $('#login_form').on('submit', function () {
         // $('.overlay').show()
@@ -142,7 +146,13 @@ $(document).ready(function () {
     });
 
     fetchCategory();
+    fetchBrand();
 
+    /**
+     *  = = = = = = = = = = 
+     * Fetch Categories
+     *  = = = = = = = = = = 
+     */
     function fetchCategory() {
         $.ajax({
             url: DOMAIN + 'includes/process.php',
@@ -150,14 +160,33 @@ $(document).ready(function () {
             data: { getCategory: 1 },
             success: data => {
                 let root = '<option class="form-control" value="0">Root</option>';
+                let choose = '<option class="form-control" value="">Choose Category</option>';
                 $('#parent_cat').html(root + data);
+                $('#select_cat').html(choose + data);
             }
         });
     }
 
     /**
      *  = = = = = = = = = = 
-     * Category
+     * Fetch Brand
+     *  = = = = = = = = = = 
+     */
+    function fetchBrand() {
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            data: { getBrand: 1 },
+            success: data => {
+                let choose = '<option class="form-control" value="">Choose Brand</option>';
+                $('#select_brand').html(choose + data);
+            }
+        });
+    }
+
+    /**
+     *  = = = = = = = = = = 
+     * Add Category
      *  = = = = = = = = = = 
      */
     $('#category_form').on('submit', function () {
@@ -174,6 +203,7 @@ $(document).ready(function () {
                         $('#category_name').removeClass('border-danger');
                         $('#cat_error').html('<span class="text-success">Successfully added new Category!</span>');
                         $('#category_name').val('');
+                        fetchCategory();
                     } else {
                         alert(data);
                     }
@@ -184,7 +214,7 @@ $(document).ready(function () {
 
     /**
      *  = = = = = = = = = = 
-     * Brand
+     * Add Brand
      *  = = = = = = = = = = 
      */
     $('#brand_form').on('submit', function () {
@@ -201,12 +231,41 @@ $(document).ready(function () {
                         $('#brand_name').removeClass('border-danger');
                         $('#brand_error').html('<span class="text-success">Successfully added new Brand!</span>');
                         $('#brand_name').val('');
+                        fetchBrand();
                     } else {
                         alert(data);
                     }
                 }
             });
         }
+    })
+
+    /**
+     *  = = = = = = = = = = 
+     * Add Product
+     *  = = = = = = = = = = 
+     */
+    $('#product_form').on('submit', function () {
+            $.ajax({
+                url: DOMAIN + 'includes/process.php',
+                method: 'POST',
+                data: $('#product_form').serialize(),
+                success: data => {
+                    if (data == 'NEW_PRODUCT_ADDED') {
+                        alert('New Product added successfully!');
+
+                        $('#product_name').val('');
+                        $('#product_qty').val('');
+                        $('#added_date').val('');
+                        $('#select_cat').val('');
+                        $('#select_brand').val('');
+                        $('#product_price').val('');
+                    } else {
+                        alert('An error occured while adding a product.\nFind error message in console');
+                        console.log(data);
+                    }
+                }
+            });
     })
 
     function validateEmail(mail) {

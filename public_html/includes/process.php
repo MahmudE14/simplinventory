@@ -29,6 +29,16 @@ if (isset($_POST["getCategory"])) {
     exit();
 }
 
+// Get Brand
+if (isset($_POST["getBrand"])) {
+    $obj = new DBOperation();
+    $rows = $obj->getAllRecords('brands');
+    foreach ($rows as $row) {
+        echo "<option value='{$row['bid']}'>{$row['brand_name']}</option>";
+    }
+    exit();
+}
+
 // Add Category
 if (isset($_POST["category_name"])) {
     $obj = new DBOperation();
@@ -41,6 +51,21 @@ if (isset($_POST["category_name"])) {
 if (isset($_POST["brand_name"])) {
     $obj = new DBOperation();
     $result = $obj->addBrand($_POST["brand_name"]);
+    echo $result;
+    exit();
+}
+
+// Add Product
+if (isset($_POST["added_date"]) && $_POST["product_name"]) {
+    $obj = new DBOperation();
+    $result = $obj->addProduct(
+                                $_POST["select_cat"], 
+                                $_POST["select_brand"], 
+                                $_POST["product_name"], 
+                                $_POST["product_price"], 
+                                $_POST["product_qty"], 
+                                $_POST["added_date"]
+                            );
     echo $result;
     exit();
 }
