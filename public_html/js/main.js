@@ -268,6 +268,19 @@ $(document).ready(function () {
             });
     })
 
+    manageCategory();
+    function manageCategory() {
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            data: {manageCategory: 1},
+            success: data => {
+                console.log(data);
+                $('#get_category').html(data);
+            }
+        });
+    }
+
     function validateEmail(mail) {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
             return (true)
