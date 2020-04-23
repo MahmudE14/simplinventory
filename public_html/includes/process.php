@@ -74,16 +74,16 @@ if (isset($_POST["added_date"]) && $_POST["product_name"]) {
 // Manage Category
 if (isset($_POST["manageCategory"])) {
     $m = new Manage();
-    $result = $m->manageRecordWithPagination('categories', 1);
+    $result = $m->manageRecordWithPagination('categories', $_POST["page_no"]);
     $rows = $result["rows"];
     $pagination = $result["pagination"];
 
     if (count($rows) > 0) {
-        $n = 0;
+        $n = (($_POST["page_no"] - 1) * 5) + 1;
         foreach ($rows as $row) {
         ?>
         <tr>
-            <th scope="row"><?php echo ++$n; ?></th>
+            <th scope="row"><?php echo $n; ?></th>
             <td><?php echo $row["category"]; ?></td>
             <td><?php echo $row["parent"]; ?></td>
             <td><a href="#" class="btn btn-success btn-sm">Active</a></td>
@@ -93,6 +93,7 @@ if (isset($_POST["manageCategory"])) {
             </td>
             </tr>
         <?php
+        $n++;
         }
         ?>
         <tr><td colspan="5"><?php echo $pagination; ?></td></tr>

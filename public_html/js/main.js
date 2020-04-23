@@ -238,7 +238,7 @@ $(document).ready(function () {
                 }
             });
         }
-    })
+    });
 
     /**
      *  = = = = = = = = = = 
@@ -266,20 +266,30 @@ $(document).ready(function () {
                     }
                 }
             });
-    })
+    });
 
-    manageCategory();
-    function manageCategory() {
+    manageCategory(1);
+    function manageCategory(page_no) {
         $.ajax({
             url: DOMAIN + 'includes/process.php',
             method: 'POST',
-            data: {manageCategory: 1},
+            data: { manageCategory: 1, page_no: page_no},
             success: data => {
                 console.log(data);
                 $('#get_category').html(data);
             }
         });
     }
+
+    /**
+     *  = = = = = = = = = = 
+     * Add Pagination to the buttons
+     *  = = = = = = = = = = 
+     */
+    $('body').delegate('.page-link', 'click', function () {
+        var pn = $(this).attr('pn');
+        manageCategory(pn);
+    })
 
     function validateEmail(mail) {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
