@@ -35,4 +35,8 @@ if (!isset($_SESSION["userid"])) {
     </table>
 </div>
 
+
+<?php include_once("templates/update_category_modal.php"); ?>
+
+
 <?php include_once("templates/footer.php"); ?>

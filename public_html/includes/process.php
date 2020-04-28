@@ -88,8 +88,8 @@ if (isset($_POST["manageCategory"])) {
             <td><?php echo $row["parent"]; ?></td>
             <td><a href="#" class="btn btn-success btn-sm">Active</a></td>
             <td>
-                <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                <a href="#" class="btn btn-info btn-sm">Edit</a>
+                <a href="#" did="<?php echo $row["cid"]; ?>" class="btn btn-danger btn-sm del_cat">Delete</a>
+                <a href="#" eid="<?php echo $row["cid"]; ?>" data-toggle="modal" data-target="#update_category_modal" class="btn btn-info btn-sm edit_cat">Edit</a>
             </td>
             </tr>
         <?php
@@ -100,4 +100,31 @@ if (isset($_POST["manageCategory"])) {
         <?php
         exit();
     }
+}
+
+// Delete Category
+if (isset($_POST["deleteCategory"])) {
+    $m = new Manage();
+    $result = $m->deleteRecord('categories', 'cid', $_POST["id"]);
+    echo $result;
+    exit();
+}
+
+// Update Category
+if (isset($_POST["updateCategory"]))
+{
+    $m = new Manage();
+    $result = $m->getSingleCategory("categories", "cid", $_POST["id"]);
+    echo json_encode($result);
+    exit();
+}
+
+// Update (any)
+if (isset($_POST["update_category_name"])) {
+    $m = new Manage();
+    $cid = $_POST["update_cid"];
+    $name = $_POST["update_category_name"];
+    $parent_cat = $_POST["update_parent_cat"];
+    $result = $m->updateRecords("categories", ["cid" => $cid], ["parent_cat" => $parent_cat, "category_name" => $name, "status" => 1]);
+    echo $result;
 }

@@ -15,7 +15,7 @@ class Manage
     {
         if ($table == 'categories') {
             $p_data = $this->pagination($this->con, $table, $page_no, 5);
-            $sql = "SELECT p.category_name AS category, c.category_name AS parent, p.status FROM categories p LEFT JOIN categories c ON p.parent_cat = c.cid " . $p_data["limit"];
+            $sql = "SELECT p.category_name AS category, c.category_name AS parent, p.cid, p.status FROM categories p LEFT JOIN categories c ON p.parent_cat = c.cid " . $p_data["limit"];
         }
         $result = $this->con->query($sql) or die($this->con->error);
         $rows = array();
@@ -78,16 +78,15 @@ class Manage
     {
         if ($table == "categories") { // if parent category, don't delete
             $pre_stmt = $this->con->prepare("SELECT ? FROM categories WHERE parent_cat = ?");
-            $pre_stmt->bind_param('si', $pk, $id);
+            $pre_stmt->bind_param('ii', $id, $id);
             $pre_stmt->execute();
             $result = $pre_stmt->get_result() or die($this->con->error);
             if ($result->num_rows > 0) {
                 return "DEPENDANT_CATEGORY";
-            } else {
+            } else { // delete
                 $pre_stmt = $this->con->prepare("DELETE FROM " . $table . " WHERE ". $pk ." = ?");
                 $pre_stmt->bind_param("i", $id);
-                $pre_stmt->execute();
-                $result = $pre_stmt->get_result() or die($this->con->error);
+                $result = $pre_stmt->execute() or die($this->con->error);
                 if ($result) {
                     return "CATEGORY_DELETED";
                 }
@@ -98,13 +97,61 @@ class Manage
             $pre_stmt->execute();
             $result = $pre_stmt->get_result() or die($this->con->error);
             if ($result) {
-                return "CATEGORY_DELETED";
+                return "DELETED";
             }
+        }
+    }
+
+    public function getSingleCategory($table, $pk, $id)
+    {
+        $pre_stmt = $this->con->prepare("SELECT * FROM ".$table." WHERE ".$pk." = ? LIMIT 1");
+        $pre_stmt->bind_param("i", $id);
+        $pre_stmt->execute() or die($this->con->error);
+        $result = $pre_stmt->get_result();
+        if ($result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+        }
+        return $row;
+    }
+
+    public function updateCategory($table, $pk, $id)
+    {
+        # code...
+    }
+
+    public function updateRecords($table, $where, $fields)
+    {
+        $set_fields = "";
+        $condition = "";
+
+        // WHERE k = v
+        foreach ($where as $key => $value) {
+            $condition .= $key . "='" . $value . "' AND ";
+        }
+
+        $condition = substr($condition , 0, -5);
+
+        // SET key = value
+        foreach ($fields as $key => $value) {
+            $set_fields .= $key . " = '" . $value . "', ";
+        }
+
+        $set_fields = substr($set_fields, 0, -2);
+
+        $sql = "UPDATE " . $table . " SET " . $set_fields . " WHERE " . $condition;
+
+        if ($this->con->query($sql)) {
+            return "UPDATED";
+        } else {
+            return $this->con->error;
         }
     }
 }
 
-$obj = new Manage();
+// $obj = new Manage();
 // echo "<pre>";
 // print_r($obj->manageRecordWithPagination('categories', 1));
-echo $obj->deleteRecord("categories", "cid", 9);
+// echo $obj->deleteRecord("categories", "cid", 17);
+// print_r($obj->getSingleCategory('categories', 'cid', 3));
+// echo $obj->updateRecords("categories", ["cid" => 1], ["parent_cat" => "0", "category_name" => "Electro", "status" => 1]);
+

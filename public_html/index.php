@@ -19,7 +19,7 @@ if (isset($_SESSION["userid"])) {
     <div class="card mx-auto m-4" style="width: 30rem;">
       <img src="images/login.png" style="width: 40%;" class="card-img-top mx-auto" alt="...">
       <div class="card-body">
-        <form id="login_form" onsubmit="return false">
+        <form id="login_form" onsubmit="event.preventDefault(); return false;">
           <div class="form-group">
             <label for="login_email">Email address</label>
             <input type="email" class="form-control" name="login_email" id="login_email" aria-describedby="emailHelp">

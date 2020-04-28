@@ -137,7 +137,7 @@ $(document).ready(function () {
                         password.addClass('border-danger');
                         $('#p_error').html('<span class="text-danger">Password didn\'t match</span>');
                     } else {
-                        console.log(data);
+                        // console.log(data);
                         window.location = DOMAIN + 'dashboard.php';
                     }
                 }
@@ -269,13 +269,19 @@ $(document).ready(function () {
     });
 
     manageCategory(1);
+    /**
+     *  = = = = = = = = = = 
+     * Manage category (Paginate)
+     *  = = = = = = = = = = 
+     */
+    // populating the manage category table
     function manageCategory(page_no) {
         $.ajax({
             url: DOMAIN + 'includes/process.php',
             method: 'POST',
             data: { manageCategory: 1, page_no: page_no},
             success: data => {
-                console.log(data);
+                // console.log(data);
                 $('#get_category').html(data);
             }
         });
@@ -283,13 +289,104 @@ $(document).ready(function () {
 
     /**
      *  = = = = = = = = = = 
-     * Add Pagination to the buttons
+     * Pagination buttons
      *  = = = = = = = = = = 
      */
     $('body').delegate('.page-link', 'click', function () {
         var pn = $(this).attr('pn');
         manageCategory(pn);
     })
+
+    /**
+     *  = = = = = = = = = = 
+     * Category delete
+     *  = = = = = = = = = = 
+     */
+    $('body').delegate('.del_cat', 'click', function () {
+        let did = $(this).attr('did');
+        if (confirm('Are you sure to want to delete?')) {
+            $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            data: { deleteCategory: 1, id:did },
+            success: data => {
+                if (data == 'DEPENDANT_CATEGORY') {
+                    alert('This category cannot be deleted!\nCategory type: Parent Category');
+                } else if (data == 'CATEGORY_DELETED') {
+                    alert('This category deleted successfully!');
+                    manageCategory(1);
+                } else if (data == 'DELETED') {
+                    alert('Delete successful!');
+                } else {
+                    alert(data);
+                }
+            }
+        });
+        } else {
+            // 
+        }
+    });
+
+    // helper function for update
+    fetchCategory_forUpdate();
+    function fetchCategory_forUpdate() {
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            data: { getCategory: 1 },
+            success: data => {
+                let root = '<option class="form-control" value="0">Root</option>';
+                $('#update_parent_cat').html(root + data);            }
+        });
+    }
+
+    /**
+     *  = = = = = = = = = = 
+     * Category update
+     *  = = = = = = = = = = 
+     */
+    // fill up update modal with related information
+    $('body').delegate('.edit_cat', 'click', function () {
+        let eid = $(this).attr('eid');
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            dataType: 'json',
+            data: {updateCategory: 1, id: eid },
+            success: data => {
+                console.log(data);
+                $('#update_cid').val(data['cid']);
+                $('#update_category_name').val(data['category_name']);
+                $('#update_parent_cat').val(data['parent_cat']);
+            }
+        })
+    });
+
+    $('#update_category_form').on('submit', e => {
+        e.preventDefault();
+        if ($('#update_category_name').val() == '') {
+            $('#update_category_name').addClass('border-danger');
+            $('#update_cat_error').html('<span class="text-danger">Please enter Category name</span>');
+        } else {
+            $.ajax({
+                url: DOMAIN + 'includes/process.php',
+                method: 'POST',
+                data: $('#update_category_form').serialize(),
+                success: data => {
+                    if (data == "UPDATED") {
+                        $('#update_category_name').removeClass('border-danger');
+                        $('#update_cat_error').html('<span class="text-success">Successfully added new Category!</span>');
+                        $('#update_category_name').val('');
+                        fetchCategory();
+                        // window.location.href = "";
+                        location.reload();
+                    } else {
+                        alert(data);
+                    }
+                }
+            });
+        }
+    });
 
     function validateEmail(mail) {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
@@ -298,4 +395,7 @@ $(document).ready(function () {
         return (false)
     }
 
+
+    // https://www.youtube.com/watch?v=MUVx14iLjvY&list=PLB_Wd4-5SGAYCmzk21-bvdVTTF6AkH3-T&index=27
+    // 20:12
 });
