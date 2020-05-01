@@ -71,6 +71,11 @@ if (isset($_POST["added_date"]) && $_POST["product_name"]) {
     exit();
 }
 
+/**
+ * = = = = = = = = = = = = = = = = = = = 
+ * CATEGORY
+ * = = = = = = = = = = = = = = = = = = = 
+ */
 // Manage Category
 if (isset($_POST["manageCategory"])) {
     $m = new Manage();
@@ -110,7 +115,7 @@ if (isset($_POST["deleteCategory"])) {
     exit();
 }
 
-// Update Category
+// Get single for Update Category
 if (isset($_POST["updateCategory"]))
 {
     $m = new Manage();
@@ -119,12 +124,74 @@ if (isset($_POST["updateCategory"]))
     exit();
 }
 
-// Update (any)
+// Update Category
 if (isset($_POST["update_category_name"])) {
     $m = new Manage();
     $cid = $_POST["update_cid"];
     $name = $_POST["update_category_name"];
     $parent_cat = $_POST["update_parent_cat"];
     $result = $m->updateRecords("categories", ["cid" => $cid], ["parent_cat" => $parent_cat, "category_name" => $name, "status" => 1]);
+    echo $result;
+}
+
+/**
+ * = = = = = = = = = = = = = = = = = = = 
+ * Brand
+ * = = = = = = = = = = = = = = = = = = = 
+ */
+// Manage Brand
+if (isset($_POST["manageBrand"])) {
+    $m = new Manage();
+    $result = $m->manageRecordWithPagination('brands', $_POST["page_no"]);
+    $rows = $result["rows"];
+    $pagination = $result["pagination"];
+
+    if (count($rows) > 0) {
+        $n = (($_POST["page_no"] - 1) * 5) + 1;
+        foreach ($rows as $row) {
+        ?>
+        <tr>
+            <th scope="row"><?php echo $n; ?></th>
+            <td><?php echo $row["brand_name"]; ?></td>
+            <td><a href="#" class="btn btn-success btn-sm">Active</a></td>
+            <td>
+                <a href="#" did="<?php echo $row["bid"]; ?>" class="btn btn-danger btn-sm del_brand">Delete</a>
+                <a href="#" eid="<?php echo $row["bid"]; ?>" data-toggle="modal" data-target="#update_brand_modal" class="btn btn-info btn-sm edit_brand">Edit</a>
+            </td>
+            </tr>
+        <?php
+        $n++;
+        }
+        ?>
+        <tr><td colspan="5"><?php echo $pagination; ?></td></tr>
+        <?php
+        exit();
+    }
+}
+
+// Delete Brand
+if (isset($_POST["deleteBrand"])) {
+    $m = new Manage();
+    $result = $m->deleteRecord('brands', 'bid', $_POST["id"]);
+    echo $result;
+    exit();
+}
+
+// Get single for Update Brand
+if (isset($_POST["updateBrand"]))
+{
+    $m = new Manage();
+    $result = $m->getSingleCategory("brands", "bid", $_POST["id"]);
+    echo json_encode($result);
+    exit();
+}
+
+
+// Update Brand
+if (isset($_POST["update_brand_name"])) {
+    $m = new Manage();
+    $id = $_POST["update_bid"];
+    $name = $_POST["update_brand_name"];
+    $result = $m->updateRecords("brands", ["bid" => $id], ["brand_name" => $name, "status" => 1]);
     echo $result;
 }

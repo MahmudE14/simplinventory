@@ -246,26 +246,26 @@ $(document).ready(function () {
      *  = = = = = = = = = = 
      */
     $('#product_form').on('submit', function () {
-            $.ajax({
-                url: DOMAIN + 'includes/process.php',
-                method: 'POST',
-                data: $('#product_form').serialize(),
-                success: data => {
-                    if (data == 'NEW_PRODUCT_ADDED') {
-                        alert('New Product added successfully!');
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            data: $('#product_form').serialize(),
+            success: data => {
+                if (data == 'NEW_PRODUCT_ADDED') {
+                    alert('New Product added successfully!');
 
-                        $('#product_name').val('');
-                        $('#product_qty').val('');
-                        $('#added_date').val('');
-                        $('#select_cat').val('');
-                        $('#select_brand').val('');
-                        $('#product_price').val('');
-                    } else {
-                        alert('An error occured while adding a product.\nFind error message in console');
-                        console.log(data);
-                    }
+                    $('#product_name').val('');
+                    $('#product_qty').val('');
+                    $('#added_date').val('');
+                    $('#select_cat').val('');
+                    $('#select_brand').val('');
+                    $('#product_price').val('');
+                } else {
+                    alert('An error occured while adding a product.\nFind error message in console');
+                    console.log(data);
                 }
-            });
+            }
+        });
     });
 
     manageCategory(1);
@@ -279,7 +279,7 @@ $(document).ready(function () {
         $.ajax({
             url: DOMAIN + 'includes/process.php',
             method: 'POST',
-            data: { manageCategory: 1, page_no: page_no},
+            data: { manageCategory: 1, page_no: page_no },
             success: data => {
                 // console.log(data);
                 $('#get_category').html(data);
@@ -306,22 +306,22 @@ $(document).ready(function () {
         let did = $(this).attr('did');
         if (confirm('Are you sure to want to delete?')) {
             $.ajax({
-            url: DOMAIN + 'includes/process.php',
-            method: 'POST',
-            data: { deleteCategory: 1, id:did },
-            success: data => {
-                if (data == 'DEPENDANT_CATEGORY') {
-                    alert('This category cannot be deleted!\nCategory type: Parent Category');
-                } else if (data == 'CATEGORY_DELETED') {
-                    alert('This category deleted successfully!');
-                    manageCategory(1);
-                } else if (data == 'DELETED') {
-                    alert('Delete successful!');
-                } else {
-                    alert(data);
+                url: DOMAIN + 'includes/process.php',
+                method: 'POST',
+                data: { deleteCategory: 1, id: did },
+                success: data => {
+                    if (data == 'DEPENDANT_CATEGORY') {
+                        alert('This category cannot be deleted!\nCategory type: Parent Category');
+                    } else if (data == 'CATEGORY_DELETED') {
+                        alert('This category deleted successfully!');
+                        manageCategory(1);
+                    } else if (data == 'DELETED') {
+                        alert('Delete successful!');
+                    } else {
+                        alert(data);
+                    }
                 }
-            }
-        });
+            });
         } else {
             // 
         }
@@ -336,7 +336,8 @@ $(document).ready(function () {
             data: { getCategory: 1 },
             success: data => {
                 let root = '<option class="form-control" value="0">Root</option>';
-                $('#update_parent_cat').html(root + data);            }
+                $('#update_parent_cat').html(root + data);
+            }
         });
     }
 
@@ -352,7 +353,7 @@ $(document).ready(function () {
             url: DOMAIN + 'includes/process.php',
             method: 'POST',
             dataType: 'json',
-            data: {updateCategory: 1, id: eid },
+            data: { updateCategory: 1, id: eid },
             success: data => {
                 console.log(data);
                 $('#update_cid').val(data['cid']);
@@ -388,6 +389,106 @@ $(document).ready(function () {
         }
     });
 
+    /**
+     *  = = = = = = = = = = 
+     * Manage Brand
+     *  = = = = = = = = = = 
+     */
+    manageBrand(1);
+    function manageBrand(page_no) {
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            data: { manageBrand: 1, page_no: page_no },
+            success: data => {
+                console.log(data);
+                $('#get_brand').html(data);
+            }
+        });
+    }
+
+    /**
+     *  = = = = = = = = = = 
+     * Pagination buttons (brand)
+     *  = = = = = = = = = = 
+     */
+    $('body').delegate('.page-link', 'click', function () {
+        var pn = $(this).attr('pn');
+        manageBrand(pn);
+    });
+
+    /**
+     *  = = = = = = = = = = 
+     * Delete Brand
+     *  = = = = = = = = = = 
+     */
+    $('body').delegate('.del_brand', 'click', function () {
+        let did = $(this).attr('did');
+        if (confirm('Are you sure to want to delete?')) {
+            $.ajax({
+                url: DOMAIN + 'includes/process.php',
+                method: 'POST',
+                data: { deleteBrand: 1, id: did },
+                success: data => {
+                    if (data == 'DELETED') {
+                        alert('Brand is successfully deleted!')
+                        // manageBrand(1);
+                    }
+                    location.reload();
+                }
+            });
+        }
+    });
+
+    /**
+     *  = = = = = = = = = = 
+     * Update Brand
+     *  = = = = = = = = = = 
+     */
+    // fill up update modal with related information
+    $('body').delegate('.edit_brand', 'click', function () {
+        let eid = $(this).attr('eid');
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            dataType: 'json',
+            data: { updateBrand: 1, id: eid },
+            success: data => {
+                console.log(data);
+                $('#update_bid').val(data['bid']);
+                $('#update_brand_name').val(data['brand_name']);
+            }
+        })
+    });
+
+    // Update Brand
+    $('#update_brand_form').on('submit', e => {
+        e.preventDefault();
+        if ($('#update_brand_name').val() == '') {
+            $('#update_brand_name').addClass('border-danger');
+            $('#update_brand_error').html('<span class="text-danger">Please enter Brand name</span>');
+        } else {
+            $.ajax({
+                url: DOMAIN + 'includes/process.php',
+                method: 'POST',
+                data: $('#update_brand_form').serialize(),
+                success: data => {
+                    console.log(data);
+                    if (data == "UPDATED") {
+                        $('#update_brand_name').removeClass('border-danger');
+                        $('#update_brand_error').html('<span class="text-success">Successfully added new Category!</span>');
+                        $('#update_brand_name').val('');
+                        fetchCategory();
+                        // window.location.href = "";
+                        location.reload();
+                    } else {
+                        alert(data);
+                    }
+                }
+            });
+        }
+    });
+
     function validateEmail(mail) {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
             return (true)
@@ -396,6 +497,6 @@ $(document).ready(function () {
     }
 
 
-    // https://www.youtube.com/watch?v=MUVx14iLjvY&list=PLB_Wd4-5SGAYCmzk21-bvdVTTF6AkH3-T&index=27
-    // 20:12
+    // https://www.youtube.com/watch?v=0NtWVV0Fwx4&list=PLB_Wd4-5SGAYCmzk21-bvdVTTF6AkH3-T&index=29
+    // 
 });

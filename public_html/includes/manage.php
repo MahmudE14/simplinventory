@@ -13,9 +13,11 @@ class Manage
 
     public function manageRecordWithPagination($table, $page_no)
     {
+        $p_data = $this->pagination($this->con, $table, $page_no, 5);
         if ($table == 'categories') {
-            $p_data = $this->pagination($this->con, $table, $page_no, 5);
             $sql = "SELECT p.category_name AS category, c.category_name AS parent, p.cid, p.status FROM categories p LEFT JOIN categories c ON p.parent_cat = c.cid " . $p_data["limit"];
+        } else {
+            $sql = "SELECT * FROM " . $table . " " . $p_data["limit"];
         }
         $result = $this->con->query($sql) or die($this->con->error);
         $rows = array();
@@ -27,6 +29,7 @@ class Manage
         return ['rows' => $rows, "pagination" => $p_data["pagination"]];
     }
 
+    // generate pagination HTML
     private function pagination($con, $table, $pno, $n)
     {
         $res = $con->query("SELECT COUNT(*) as `rows` FROM " . $table);
@@ -92,8 +95,8 @@ class Manage
                 }
             }
         } else { // delete
-            $pre_stmt = $this->con->prepare("DELETE FROM ? WHERE ? = ?");
-            $pre_stmt->bind_param("ssi", $table, $pk, $id);
+            $pre_stmt = $this->con->prepare("DELETE FROM " . $table . " WHERE " . $pk . " = ?");
+            $pre_stmt->bind_param("i", $id);
             $pre_stmt->execute();
             $result = $pre_stmt->get_result() or die($this->con->error);
             if ($result) {

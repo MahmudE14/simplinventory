@@ -62,7 +62,7 @@ if (!isset($_SESSION["userid"])) {
                     <h4 class="card-title">Brands</h4>
                     <p class="card-text">You can manage your brands here.</p>
                     <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#brand_modal">Add</a>
-                    <a href="#" class="btn btn-primary">Manage</a>
+                    <a href="manage_brand.php" class="btn btn-primary">Manage</a>
                 </div>
             </div>
         </div>
