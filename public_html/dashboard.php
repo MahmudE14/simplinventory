@@ -72,7 +72,7 @@ if (!isset($_SESSION["userid"])) {
                     <h4 class="card-title">Products</h4>
                     <p class="card-text">You can manage your products here.</p>
                     <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#product_modal">Add</a>
-                    <a href="#" class="btn btn-primary">Manage</a>
+                    <a href="manage_product.php" class="btn btn-primary">Manage</a>
                 </div>
             </div>
         </div>

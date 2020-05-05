@@ -489,6 +489,166 @@ $(document).ready(function () {
         }
     });
 
+    /**
+     *  = = = = = = = = = = 
+     * Manage Product
+     *  = = = = = = = = = = 
+     */
+    manageProduct(1);
+    function manageProduct(page_no) {
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            data: { manageProduct: 1, page_no: page_no },
+            success: data => {
+                console.log(data);
+                $('#get_product').html(data);
+            }
+        });
+    }
+
+    /**
+     *  = = = = = = = = = = 
+     * Pagination buttons (product)
+     *  = = = = = = = = = = 
+     */
+    $('body').delegate('.page-link', 'click', function () {
+        var pn = $(this).attr('pn');
+        manageProduct(pn);
+    });
+
+    /**
+     *  = = = = = = = = = = 
+     * Delete Product
+     *  = = = = = = = = = = 
+     */
+    $('body').delegate('.del_product', 'click', function () {
+        let did = $(this).attr('did');
+        if (confirm('Are you sure to want to delete?')) {
+            $.ajax({
+                url: DOMAIN + 'includes/process.php',
+                method: 'POST',
+                data: { deleteProduct: 1, id: did },
+                success: data => {
+                    if (data == 'DELETED') {
+                        alert('Product deleted!')
+                        manageProduct(1);
+                    }
+                    location.reload();
+                }
+            });
+        }
+    });
+
+    /**
+     * 
+     * = = = = = = = = = = 
+     * Update Product
+     *  = = = = = = = = = = 
+     */
+    
+    // load Category and Brand
+    fetchCategory_forUpdateProduct();
+    fetchBrand_forUpdateProduct();
+    
+    // fill up update modal with related information
+    $('body').delegate('.edit_product', 'click', function () {
+        let eid = $(this).attr('eid');
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            dataType: 'json',
+            data: { updateProduct: 1, id: eid },
+            success: data => {
+                console.log(data);
+                $('#update_pid').val(data['pid']);
+                $('#update_product_name').val(data['product_name']);
+                $('#update_product_price').val(data['product_price']);
+                $('#update_product_qty').val(data['product_stock']);
+                $('#update_select_cat').val(data['cid']);
+                $('#update_select_brand').val(data['bid']);
+            }
+        })
+    });
+
+    // Update Product
+    // $('#update_product_form').on('submit', e => {
+    //     e.preventDefault();
+    //     if ($('#update_product_name').val() == '') {
+    //         $('#update_product_name').addClass('border-danger');
+    //         $('#update_update_error').html('<span class="text-danger">Please enter Product name</span>');
+    //     } else {
+    //         $.ajax({
+    //             url: DOMAIN + 'includes/process.php',
+    //             method: 'POST',
+    //             data: $('#update_product_form').serialize(),
+    //             success: data => {
+    //                 console.log(data);
+    //                 if (data == "UPDATED") {
+    //                     $('#update_product_name').removeClass('border-danger');
+    //                     $('#update_product_error').html('<span class="text-success">Successfully added new Category!</span>');
+    //                     $('#update_product_name').val('');
+    //                     fetchCategory();
+    //                     // window.location.href = "";
+    //                     location.reload();
+    //                 } else {
+    //                     alert(data);
+    //                 }
+    //             }
+    //         });
+    //     }
+    // });
+
+    // Update Product
+    $('#update_product_form').on('submit', function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            data: $('#update_product_form').serialize(),
+            success: data => {
+                // alert(data);
+                if (data == 'UPDATED') {
+                    alert('Update success!');
+                    location.reload();
+                } else {
+                    alert(data);
+                }
+            }
+        });
+    });
+
+    // fetchCategory_forUpdateProduct();
+    // fetchBrand_forUpdateProduct();
+
+    // fill-up select category field in Update Product modal
+    function fetchCategory_forUpdateProduct() {
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            data: { getCategory: 1 },
+            success: data => {
+                let root = '<option class="form-control" value="0">Root</option>';
+                let choose = '<option class="form-control" value="">Choose Category</option>';
+                $('#update_select_cat').html(root + data);
+                $('#update_select_brand').html(choose + data);
+            }
+        });
+    }
+
+    // fill-up select brand field in Update Product modal
+    function fetchBrand_forUpdateProduct() {
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            data: { getBrand: 1 },
+            success: data => {
+                let choose = '<option class="form-control" value="">Choose Brand</option>';
+                $('#update_select_brand').html(choose + data);
+            }
+        });
+    }
+
     function validateEmail(mail) {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
             return (true)
@@ -498,5 +658,5 @@ $(document).ready(function () {
 
 
     // https://www.youtube.com/watch?v=0NtWVV0Fwx4&list=PLB_Wd4-5SGAYCmzk21-bvdVTTF6AkH3-T&index=29
-    // 
+    // 20:45
 });
