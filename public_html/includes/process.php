@@ -237,7 +237,7 @@ if (isset($_POST["manageProduct"])) {
         <tr>
             <td colspan="9"><?php echo $pagination; ?></td>
         </tr>
-<?php
+    <?php
         exit();
     }
 }
@@ -285,5 +285,49 @@ if (isset($_POST["update_product_name"])) {
     );
 
     echo $result;
+    exit();
+}
+
+/**
+ * = = = = = = = = = = = = = = = = = = = 
+ * Order processing
+ * = = = = = = = = = = = = = = = = = = = 
+ */
+if (isset($_POST["getNewOrderItem"])) {
+    $obj = new DBOperation();
+    $rows = $obj->getAllRecords("products");
+    ?>
+    <tr>
+        <td><span class="font-weight-bold" id="number">1</span></td>
+        <td>
+            <select name="pid[]" class="form-control form-control-sm pid" required>
+                <option value="">Choose product</option>
+            <?php foreach ($rows as $row) { ?>
+                <option value="<?php echo $row["pid"]; ?>"><?php echo $row["product_name"]; ?></option>
+            <?php } ?>
+            </select>
+        </td>
+        <td>
+            <input type="text" name="tqty[]" class="form-control form-control-sm tqty" readonly>
+        </td>
+        <td>
+            <input type="text" name="qty[]" class="form-control form-control-sm qty" required>
+        </td>
+        <td>
+            <input type="text" name="price[]" class="form-control form-control-sm price" readonly>
+        </td>
+        <td>
+            <input type="hidden" name="pro_name[]" class="form-control form-control-sm pro_name">
+        </td>
+        <td>BDT <span class="amt">00.00</span>/-</td>
+    <?php
+    exit();
+}
+
+// Get Price and Quantity for single item
+if (isset($_POST["getPriceAndQty"])) {
+    $m = new Manage();
+    $result = $m->getSingleRecord("products", "pid", $_POST["id"]);
+    echo json_encode($result);
     exit();
 }

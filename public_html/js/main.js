@@ -401,7 +401,6 @@ $(document).ready(function () {
             method: 'POST',
             data: { manageBrand: 1, page_no: page_no },
             success: data => {
-                console.log(data);
                 $('#get_brand').html(data);
             }
         });
@@ -501,7 +500,6 @@ $(document).ready(function () {
             method: 'POST',
             data: { manageProduct: 1, page_no: page_no },
             success: data => {
-                console.log(data);
                 $('#get_product').html(data);
             }
         });
@@ -551,7 +549,7 @@ $(document).ready(function () {
     fetchCategory_forUpdateProduct();
     fetchBrand_forUpdateProduct();
     
-    // fill up update modal with related information
+    // fill up update modal with related information (Pre-fill)
     $('body').delegate('.edit_product', 'click', function () {
         let eid = $(this).attr('eid');
         $.ajax({
@@ -571,35 +569,7 @@ $(document).ready(function () {
         })
     });
 
-    // Update Product
-    // $('#update_product_form').on('submit', e => {
-    //     e.preventDefault();
-    //     if ($('#update_product_name').val() == '') {
-    //         $('#update_product_name').addClass('border-danger');
-    //         $('#update_update_error').html('<span class="text-danger">Please enter Product name</span>');
-    //     } else {
-    //         $.ajax({
-    //             url: DOMAIN + 'includes/process.php',
-    //             method: 'POST',
-    //             data: $('#update_product_form').serialize(),
-    //             success: data => {
-    //                 console.log(data);
-    //                 if (data == "UPDATED") {
-    //                     $('#update_product_name').removeClass('border-danger');
-    //                     $('#update_product_error').html('<span class="text-success">Successfully added new Category!</span>');
-    //                     $('#update_product_name').val('');
-    //                     fetchCategory();
-    //                     // window.location.href = "";
-    //                     location.reload();
-    //                 } else {
-    //                     alert(data);
-    //                 }
-    //             }
-    //         });
-    //     }
-    // });
-
-    // Update Product
+    // Update Product (submit)
     $('#update_product_form').on('submit', function (e) {
         e.preventDefault();
         $.ajax({
@@ -607,7 +577,6 @@ $(document).ready(function () {
             method: 'POST',
             data: $('#update_product_form').serialize(),
             success: data => {
-                // alert(data);
                 if (data == 'UPDATED') {
                     alert('Update success!');
                     location.reload();
@@ -617,9 +586,6 @@ $(document).ready(function () {
             }
         });
     });
-
-    // fetchCategory_forUpdateProduct();
-    // fetchBrand_forUpdateProduct();
 
     // fill-up select category field in Update Product modal
     function fetchCategory_forUpdateProduct() {
@@ -654,9 +620,5 @@ $(document).ready(function () {
             return (true)
         }
         return (false)
-    }
-
-
-    // https://www.youtube.com/watch?v=0NtWVV0Fwx4&list=PLB_Wd4-5SGAYCmzk21-bvdVTTF6AkH3-T&index=29
-    // 20:45
+    } 
 });
