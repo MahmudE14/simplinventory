@@ -48,6 +48,7 @@ $(document).ready(function () {
                 tr.find('.price').val(data['product_price']);
                 let amount = tr.find('.qty').val() * tr.find('.price').val();
                 tr.find('.amt').html(amount);
+                calculate(0, 0);
             }
         });
     });
@@ -67,7 +68,43 @@ $(document).ready(function () {
             } else {
                 let total_price = Number(qty.val()) * Number(tr.find('.price').val());
                 tr.find('.amt').html(total_price);
+                calculate(0, 0);
             }
         }
     });
+
+    function calculate(discount_amount, paid_amount) {
+        let sub_total = 0;
+        let gst = 0;
+        let net_total = 0;
+        let discount = Number(discount_amount);
+        let paid = Number(paid_amount);
+        let due =  0;
+
+        $('.amt').each(function () {
+            sub_total += Number($(this).html());
+        })
+
+        gst = 0.18 * sub_total;
+        net_total = gst + sub_total - discount;
+        due = net_total - paid_amount;
+
+        $('#sub_total').val(sub_total);
+        $('#gst').val(gst);
+        $('#discount').val(discount);
+        $('#net_total').val(net_total);
+        // $('#paid')
+        $('#due').val(due);
+    }
+
+    $('#discount').keyup(function () {
+        let discount = $(this).val();
+        calculate(discount, 0);
+    })
+
+    $('#paid').keyup(function () {
+        let paid = $(this).val();
+        let discount = $('#discount').val();
+        calculate(discount, paid);
+    })
 });
