@@ -298,7 +298,7 @@ if (isset($_POST["getNewOrderItem"])) {
     $rows = $obj->getAllRecords("products");
     ?>
     <tr>
-        <td><span class="font-weight-bold" id="number">1</span></td>
+        <td><span class="font-weight-bold number" id="number">1</span></td>
         <td>
             <select name="pid[]" class="form-control form-control-sm pid" required>
                 <option value="">Choose product</option>
@@ -316,9 +316,9 @@ if (isset($_POST["getNewOrderItem"])) {
         <td>
             <input type="text" name="price[]" class="form-control form-control-sm price" readonly>
         </td>
-        <td>
+        <span>
             <input type="hidden" name="pro_name[]" class="form-control form-control-sm pro_name">
-        </td>
+        </span>
         <td>BDT <span class="amt">00.00</span>/-</td>
     <?php
     exit();

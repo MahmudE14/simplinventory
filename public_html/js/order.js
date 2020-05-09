@@ -13,6 +13,11 @@ $(document).ready(function () {
             data: {getNewOrderItem: 1},
             success: data => {
                 $('#invoice_item').append(data);
+                // increase the serial and set it
+                let n = 0;
+                $('.number').each(function () {
+                    $(this).html(++n);
+                })
             }
         });
     }
@@ -45,5 +50,24 @@ $(document).ready(function () {
                 tr.find('.amt').html(amount);
             }
         });
+    });
+
+    // on quantity change calculate price
+    $('#invoice_item').delegate('.qty', 'keyup', function () {
+        let qty = $(this);
+        let tr = $(this).parent().parent();
+
+        if (isNaN(qty.val())) {
+            alert('Please enter valid quantity.');
+            qty.val(1);
+        } else {
+            if ( Number(qty.val()) > Number(tr.find('.tqty').val()) ) {
+                alert('Sorry! This much quantity is not available!');
+                qty.val(1);
+            } else {
+                let total_price = Number(qty.val()) * Number(tr.find('.price').val());
+                tr.find('.amt').html(total_price);
+            }
+        }
     });
 });
