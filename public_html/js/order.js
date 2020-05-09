@@ -25,6 +25,7 @@ $(document).ready(function () {
     // remove row from make order list
     $('#remove').on('click', function () {
         $('#invoice_item').children('tr:last').remove();
+        calculate(0, 0);
     })
 
     // on select product
