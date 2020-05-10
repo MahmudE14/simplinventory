@@ -107,5 +107,21 @@ $(document).ready(function () {
         let paid = $(this).val();
         let discount = $('#discount').val();
         calculate(discount, paid);
+    });
+
+    // receiving order
+    $('#order_form').click(function () {
+        $.ajax({
+            url: DOMAIN + 'includes/process.php',
+            method: 'POST',
+            data: $('#get_order_data').serialize(),
+            success: data => {
+                console.log(data);
+                alert(data);
+            }
+        })
     })
 });
+
+// 30
+// 9:00

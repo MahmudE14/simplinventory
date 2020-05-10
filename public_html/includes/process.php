@@ -316,9 +316,9 @@ if (isset($_POST["getNewOrderItem"])) {
         <td>
             <input type="text" name="price[]" class="form-control form-control-sm price" readonly>
         </td>
-        <span>
-            <input type="hidden" name="pro_name[]" class="form-control form-control-sm pro_name">
-        </span>
+        <td>
+            <input style="display: none;" type="hidden" name="pro_name[]" class="form-control form-control-sm pro_name">
+        </td>
         <td>BDT <span class="amt">00.00</span>/-</td>
     <?php
     exit();
@@ -330,4 +330,27 @@ if (isset($_POST["getPriceAndQty"])) {
     $result = $m->getSingleRecord("products", "pid", $_POST["id"]);
     echo json_encode($result);
     exit();
+}
+
+// Get Order
+if (isset($_POST["order_date"]) && isset($_POST["cust_name"])) {
+    $order_date = $_POST["order_date"];
+    $customer_name = $_POST["cust_name"];
+
+    $arr_tqty = $_POST["tqty"];
+    $arr_qty = $_POST["qty"];
+    $arr_price = $_POST["price"];
+    $arr_pro_name = $_POST["pro_name"];
+
+    $sub_total = $_POST["sub_total"];
+    $gst = $_POST["gst"];
+    $discount = $_POST["discount"];
+    $net_total = $_POST["net_total"];
+    $paid = $_POST["paid"];
+    $due = $_POST["due"];
+    $payment_type = $_POST["payment_type"];
+
+    $m = new Manage();
+    $result = $m->storeCustomerOrderInvoice($order_date, $customer_name, $arr_tqty, $arr_qty, $arr_price, $arr_pro_name, $sub_total, $gst, $discount, $net_total, $paid, $due, $payment_type);
+    echo $result;
 }

@@ -89,7 +89,7 @@ class Manage
             if ($result->num_rows > 0) {
                 return "DEPENDANT_CATEGORY";
             } else { // delete
-                $pre_stmt = $this->con->prepare("DELETE FROM " . $table . " WHERE ". $pk ." = ?");
+                $pre_stmt = $this->con->prepare("DELETE FROM " . $table . " WHERE " . $pk . " = ?");
                 $pre_stmt->bind_param("i", $id);
                 $result = $pre_stmt->execute() or die($this->con->error);
                 if ($result) {
@@ -109,7 +109,7 @@ class Manage
 
     public function getSingleCategory($table, $pk, $id)
     {
-        $pre_stmt = $this->con->prepare("SELECT * FROM ".$table." WHERE ".$pk." = ? LIMIT 1");
+        $pre_stmt = $this->con->prepare("SELECT * FROM " . $table . " WHERE " . $pk . " = ? LIMIT 1");
         $pre_stmt->bind_param("i", $id);
         $pre_stmt->execute() or die($this->con->error);
         $result = $pre_stmt->get_result();
@@ -134,7 +134,7 @@ class Manage
             $condition .= $key . "='" . $value . "' AND ";
         }
 
-        $condition = substr($condition , 0, -5);
+        $condition = substr($condition, 0, -5);
 
         // SET key = value
         foreach ($fields as $key => $value) {
@@ -154,7 +154,7 @@ class Manage
 
     public function getSingleRecord($table, $pk, $id)
     {
-        $pre_stmt = $this->con->prepare("SELECT * FROM ".$table." WHERE ".$pk." = ? LIMIT 1");
+        $pre_stmt = $this->con->prepare("SELECT * FROM " . $table . " WHERE " . $pk . " = ? LIMIT 1");
         $pre_stmt->bind_param("i", $id);
         $pre_stmt->execute() or die($this->con->error);
         $result = $pre_stmt->get_result();
@@ -162,6 +162,23 @@ class Manage
             $row = $result->fetch_assoc();
         }
         return $row;
+    }
+
+    public function storeCustomerOrderInvoice($order_date, $cust_name, $arr_tqty, $arr_qty, $arr_price, $arr_pro_name, $sub_total, $gst, $discount, $net_total, $paid, $due, $payment_type)
+    {
+        $pre_stmt = $this->con->prepare("INSERT INTO `invoice`
+        (`customer_name`, `order_date`, `sub_total`, `gst`, `discount`, `net_total`, `paid`, `due`, `payment_type`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $pre_stmt->bind_param("ssdddddds", $cust_name, $order_date, $sub_total, $gst, $discount, $net_total, $paid, $due, $payment_type);
+        $pre_stmt->execute() or die($this->con->error);
+        $invoice_no = $pre_stmt->insert_id;
+        if ($invoice_no != null) {
+            for ($i=0; $i < count($arr_price); $i++) { 
+                $insert_product = $this->con->prepare("INSERT INTO `invoice_details`(`invoice_no`, `product_name`, `price`, `qty`) VALUES (?, ?, ?, ?)");
+                $insert_product->bind_param("isdd", $invoice_no, $arr_pro_name[$i], $arr_price[$i], $arr_qty[$i]);
+                $insert_product->execute() or die($this->con->error);
+            }
+            return "ORDER_COMPLETED";
+        }
     }
 }
 
@@ -171,4 +188,3 @@ class Manage
 // echo $obj->deleteRecord("categories", "cid", 17);
 // print_r($obj->getSingleCategory('categories', 'cid', 3));
 // echo $obj->updateRecords("categories", ["cid" => 1], ["parent_cat" => "0", "category_name" => "Electro", "status" => 1]);
-
