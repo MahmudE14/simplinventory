@@ -173,11 +173,26 @@ class Manage
         $invoice_no = $pre_stmt->insert_id;
         if ($invoice_no != null) {
             for ($i=0; $i < count($arr_price); $i++) { 
+                // calculate remaining product number
+                $rem_qty = $arr_tqty[$i] - $arr_qty[$i];
+                // if asked for more than what is in stock, return failure message
+                if ($rem_qty < 0) { // failure message
+                    return "ORDER_FAIL_COMPLETE";
+                } else { // update product stock
+                    $this->con->query("UPDATE `products` SET product_stock = '$rem_qty' WHERE product_name = '$arr_pro_name[$i]'");
+                }
+
                 $insert_product = $this->con->prepare("INSERT INTO `invoice_details`(`invoice_no`, `product_name`, `price`, `qty`) VALUES (?, ?, ?, ?)");
                 $insert_product->bind_param("isdd", $invoice_no, $arr_pro_name[$i], $arr_price[$i], $arr_qty[$i]);
                 $insert_product->execute() or die($this->con->error);
             }
-            return "ORDER_COMPLETED";
+            
+            return json_encode(
+                array(
+                    "status" => "ORDER_COMPLETED",
+                    "invoice_no" => $invoice_no
+                )
+            );
         }
     }
 }

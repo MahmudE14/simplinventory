@@ -21,7 +21,7 @@ if (!isset($_SESSION["userid"])) {
                         <div class="form-group row">
                             <label class="col-sm-3" align="right">Order Date:</label>
                             <div class="col-sm-6">
-                                <input type="text" id="order_date" name="order_date" class="form-control form-control-sm" readonly value="<?php echo date("Y-d-m"); ?>">
+                                <input type="text" id="order_date" name="order_date" class="form-control form-control-sm" readonly value="<?php echo date("Y-m-d"); ?>">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -77,13 +77,13 @@ if (!isset($_SESSION["userid"])) {
                         <div class="form-group row pt-3">
                             <label for="sub_total" class="col-sm-3 col-form-label" align="right">Sub Total</label>
                             <div class="col-sm-6">
-                                <input type="text" name="sub_total" id="sub_total" class="form-control form-control-sm" required>
+                                <input type="text" name="sub_total" id="sub_total" class="form-control form-control-sm" readonly>
                             </div>
                         </div>
                         <div class="form-group row pt-3">
                             <label for="gst" class="col-sm-3 col-form-label" align="right">GST (18%)</label>
                             <div class="col-sm-6">
-                                <input type="text" name="gst" id="gst" class="form-control form-control-sm" required>
+                                <input type="text" name="gst" id="gst" class="form-control form-control-sm" readonly>
                             </div>
                         </div>
                         <div class="form-group row pt-3">
@@ -95,7 +95,7 @@ if (!isset($_SESSION["userid"])) {
                         <div class="form-group row pt-3">
                             <label for="net_total" class="col-sm-3 col-form-label" align="right">Net Total</label>
                             <div class="col-sm-6">
-                                <input type="text" name="net_total" id="net_total" class="form-control form-control-sm" required>
+                                <input type="text" name="net_total" id="net_total" class="form-control form-control-sm" readonly>
                             </div>
                         </div>
                         <div class="form-group row pt-3">
@@ -107,7 +107,7 @@ if (!isset($_SESSION["userid"])) {
                         <div class="form-group row pt-3">
                             <label for="due" class="col-sm-3 col-form-label" align="right">Due</label>
                             <div class="col-sm-6">
-                                <input type="text" name="due" id="due" class="form-control form-control-sm" required>
+                                <input type="text" name="due" id="due" class="form-control form-control-sm" readonly>
                             </div>
                         </div>
                         <div class="form-group row pt-3">

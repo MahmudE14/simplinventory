@@ -42,7 +42,6 @@ $(document).ready(function () {
                 id: pid
             },
             success: data => {
-                console.log(data);
                 tr.find('.tqty').val(data['product_stock']);
                 tr.find('.pro_name').val(data['product_name']);
                 tr.find('.qty').val(1);
@@ -111,17 +110,33 @@ $(document).ready(function () {
 
     // receiving order
     $('#order_form').click(function () {
-        $.ajax({
-            url: DOMAIN + 'includes/process.php',
-            method: 'POST',
-            data: $('#get_order_data').serialize(),
-            success: data => {
-                console.log(data);
-                alert(data);
-            }
-        })
+        let invoice = $('#get_order_data').serialize();
+        if ($('#cust_name').val() === '') {
+            alert('Please, enter customer name.');
+        } else if ($('#paid').val() === '') {
+            alert('Please, enter paid amount');
+        } else {
+            $.ajax({
+                url: DOMAIN + 'includes/process.php',
+                method: 'POST',
+                data: $('#get_order_data').serialize(),
+                dataType: "json",
+                success: data => {
+                    if (data['status'] === 'ORDER_COMPLETED') {
+                        $('#get_order_data').trigger('reset');
+
+                        if (confirm('Do you want to print invoice?')) {
+                            alert(`Invoice file: PDF_INVOICE_${data['invoice_no']}.pdf`);
+                            window.location.href = DOMAIN + '/includes/invoice_bill.php?invoice_no=' + data['invoice_no'] + '&' + invoice;
+                        }
+                    } else {
+                        alert(data);
+                    }
+                }
+            });
+        }
     })
 });
 
-// 30
-// 9:00
+// 32
+// 16:10
